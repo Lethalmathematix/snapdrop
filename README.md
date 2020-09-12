@@ -10,6 +10,16 @@
 * [NodeJS](https://nodejs.org/en/)
 * [Material Design](https://material.google.com/)
 
+
+
+## Forked from RobinLinus/snapdrop
+
+Changes:
+* Show peer device type/OS in addition to pretty names
+* Removed docker
+* CSS improvements
+
+
 ## Support the Snapdrop Community
 Snadprop is free. Still, we have to pay for the server. If you want to contribute, please use PayPal
 
@@ -52,38 +62,6 @@ ShareDrop uses WebRTC only and isn't compatible with Safari browsers. Snapdrop u
 * [Buy me a cup of coffee](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=74D2NE84JHCWG&source=url)
 * Fix bugs and make a pull request. 
 * Do security analysis and suggestions
-
-## Local Development
-[Install docker with docker-compose.](https://docs.docker.com/compose/install/)
-
-Clone the repository:
-```
-    git clone https://github.com/RobinLinus/snapdrop.git
-    cd snapdrop
-    docker-compose up -d
-```
-
-To restart the containers run `docker-compose restart`.
-To stop the containers run `docker-compose stop`.
-
-
-Now point your browser to `http://localhost:8080`.
-
-### Testing PWA related features
-PWAs require that the app is served under a correctly set up and trusted TLS endpoint.
-
-The nginx container creates a CA certificate and a website certificate for you. To correctly set the common name of the certificate you need to change the FQDN environment variable in `fqdn.env` to the fully qualified domain name of your workstation.
-
-If you want to test PWA features you need to trust the CA of the certificate for your local deployment. For your convenience you can download the crt file from `http://<Your FQDN>:8080/ca.crt`. Install that certificate to the trust store of your operating system.
-- On windows make sure to install it to the `Trusted Root Certification Authorities` store.
-- On macOS double click the installed CA certificate in `Keychain Access` expand `Trust` and select `Always Trust` for SSL.
-- Firefox uses its own trust store. To install the CA point Firefox at `http://<Your FQDN>:8080/ca.crt`. When prompted select `Trust this CA to identify websites` and click OK.
-- When using Chrome you need to restart Chrome so it reloads the trust store (`chrome://restart`). Additionally, after installing a new cert you need to clear the Storage (DevTools -> Application -> Clear storagae -> Clear site data).
-
-Please note that the certificates (CA and webserver cert) expire after a day.
-Also whenever you restart the nginx docker container new certificates are created.
-
-The site is served on `https://<Your FQDN>:443`.
     
 ## Deployment Notes
 The client expects the server at http(s)://your.domain/server.
@@ -92,16 +70,9 @@ When serving the node server behind a proxy the `X-Forwarded-For` header has to 
 
 By default the server listens on port 3000.
 
-For an nginx configuration example see `nginx/default.conf`.
+For an nginx configuration example see `nginx/include-snapdrop.conf`.
 
 ## Licences
 * Thanks to [Mark DiAngelo]() for the [Blop Sound](http://soundbible.com/2067-Blop.html)
-
-
-
-## Desktop App 
-Note, if you are using Google Chrome you can easily install Snapdrop PWA on your desktop by clicking the install Button in the top-right corner.
-
-If you are not using Chrome, you can install the [Snapdrop Desktop App](https://github.com/infin1tyy/snapdrop-desktop) built on top of Electrum. (Thanks to Infin1tyy!).
 
 
