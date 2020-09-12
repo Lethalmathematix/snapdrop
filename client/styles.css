@@ -106,9 +106,13 @@ h3 {
 }
 
 .font-subheading {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
-    line-height: 24px;
+    line-height: 16px;
+}
+
+.font-subsubheading {
+    font-size: 12px;
 }
 
 .font-body1,

@@ -5,6 +5,11 @@ window.isDownloadSupported = (typeof document.createElement('a').download !== 'u
 window.isProductionEnvironment = !window.location.host.startsWith('localhost');
 window.iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+// set display name
+Events.on('displayName', e => {
+    $("displayName").textContent = "You are known as " + e.detail.message;
+});
+
 class PeersUI {
 
     constructor() {
@@ -74,7 +79,10 @@ class PeerUI {
                   <div class="circle"></div>
                   <div class="circle right"></div>
                 </div>
-                <div class="name font-subheading"></div>
+                <div class="name font-subheading">
+                    <span></span>
+                    <div class="device-type font-subsubheading"></div>
+                </div>
                 <div class="status font-body2"></div>
             </label>`
     }
@@ -91,7 +99,8 @@ class PeerUI {
         el.innerHTML = this.html();
         el.ui = this;
         el.querySelector('svg use').setAttribute('xlink:href', this._icon());
-        el.querySelector('.name').textContent = this._name();
+        el.querySelector('.name span').textContent = this._name();
+        el.querySelector('.name .device-type').textContent = this._deviceType();
         this.$el = el;
         this.$progress = el.querySelector('.progress');
     }
@@ -111,11 +120,15 @@ class PeerUI {
     }
 
     _name() {
+        return this._peer.name.displayName
+    }
+
+    _deviceType() {
         if (this._peer.name.model) {
-            return this._peer.name.os + ' ' + this._peer.name.model;
+            return '(' + this._peer.name.os + ' ' + this._peer.name.model + ')';
         }
         this._peer.name.os = this._peer.name.os.replace('Mac OS', 'Mac');
-        return this._peer.name.os + ' ' + this._peer.name.browser;
+        return '(' + this._peer.name.os + ' ' + this._peer.name.browser + ')';
     }
 
     _icon() {
@@ -137,7 +150,6 @@ class PeerUI {
             to: this._peer.id
         });
         $input.value = null; // reset input
-        this.setProgress(0.01);
     }
 
     setProgress(progress) {
@@ -495,7 +507,7 @@ class Snapdrop {
             const notifications = new Notifications();
             const networkStatusUI = new NetworkStatusUI();
             const webShareTargetUI = new WebShareTargetUI();
-        })
+        });
     }
 }
 

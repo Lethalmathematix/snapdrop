@@ -1,4 +1,7 @@
+#!/usr/bin/env nodejs
+
 const parser = require('ua-parser-js');
+const { uniqueNamesGenerator, animals, colors } = require('unique-names-generator');
 
 class SnapdropServer {
 
@@ -17,12 +20,15 @@ class SnapdropServer {
         this._joinRoom(peer);
         peer.socket.on('message', message => this._onMessage(peer, message));
         this._keepAlive(peer);
+
+         // send displayName
+         this._send(peer, { type: 'displayName', message: peer.name.displayName });
     }
 
     _onHeaders(headers, response) {
         if (response.headers.cookie && response.headers.cookie.indexOf('peerid=') > -1) return;
         response.peerId = Peer.uuid();
-        headers.push('Set-Cookie: peerid=' + response.peerId);
+        headers.push('Set-Cookie: peerid=' + response.peerId + "; SameSite=Strict; Secure");
     }
 
     _onMessage(sender, message) {
@@ -113,7 +119,7 @@ class SnapdropServer {
 
     _keepAlive(peer) {
         this._cancelKeepAlive(peer);
-        var timeout = 10000;
+        var timeout = 30000;
         if (!peer.lastBeat) {
             peer.lastBeat = Date.now();
         }
@@ -183,11 +189,13 @@ class Peer {
 
     _setName(req) {
         var ua = parser(req.headers['user-agent']);
+        // console.log(this.id);
         this.name = {
             model: ua.device.model,
             os: ua.os.name,
             browser: ua.browser.name,
-            type: ua.device.type
+            type: ua.device.type,
+            displayName: uniqueNamesGenerator({ length: 2, separator: ' ', dictionaries: [colors, animals], style: 'capital' })
         };
     }
 
@@ -226,4 +234,4 @@ class Peer {
     };
 }
 
-const server = new SnapdropServer(process.env.PORT || 3000);
+const server = new SnapdropServer(process.env.PORT || 3838);

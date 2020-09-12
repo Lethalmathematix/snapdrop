@@ -41,6 +41,9 @@ class ServerConnection {
             case 'ping':
                 this.send({ type: 'pong' });
                 break;
+            case 'displayName':
+                Events.fire('displayName', msg);
+                break;
             default:
                 console.error('WS: unkown message type', msg);
         }
@@ -55,7 +58,7 @@ class ServerConnection {
         // hack to detect if deployment or development environment
         const protocol = location.protocol.startsWith('https') ? 'wss' : 'ws';
         const webrtc = window.isRtcSupported ? '/webrtc' : '/fallback';
-        const url = protocol + '://' + location.host + '/server' + webrtc;
+        const url = protocol + '://' + location.host + '/snapdropserver' + webrtc;
         return url;
     }
 
@@ -508,9 +511,5 @@ class Events {
 RTCPeer.config = {
     'iceServers': [{
         urls: 'stun:stun.l.google.com:19302'
-    }, {
-        urls: 'turn:192.158.29.39:3478?transport=tcp',
-        credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-        username: '28224511:1379330808'
     }]
 }
